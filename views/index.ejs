@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Language" content="fr">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="views/ressources/style.css" type="text/css" media="screen">
+        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+        <title>SnapBlog</title>
+
+    </head>
+    <body>
+        <header>
+            <h1>SnapBlog</h1>
+        </header>
+        <form action="/" method="post">
+            <div class="input Title" >
+                <h3>Titre du SnapBlog</h3>
+                <input class="input" type="text" name="article[titleart]" required="required">
+            </div>
+            <div class="input Post">
+                <h3>Contenu du SnapBlog</h3>
+                <textarea  class="input textareaPost" name="article[contentart]" cols="25" maxlength="1000" required="required"></textarea>
+            </div>
+            <div class="input">
+                <table border="1">
+                    <tr>
+                        <td>
+                            <input type="radio" name="checkDate" value="date">
+                            <b>Sélectionnez une date</b>
+                        </td>
+                        <td>
+                            <input type="radio" name="checkDate" value="duration">
+                            <b>Sélectionnez une durée</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input  type="text" id="datepicker" name="expirationDate">
+                        </td>
+                        <td>
+                            <input  type="number" name="expirationCountdown">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="input">
+                <input class="submit" type="submit" value="Poster">
+            </div>
+        </form>
+    </body>
+</html>

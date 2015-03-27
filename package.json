@@ -1,0 +1,19 @@
+{
+  "name": "Javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.12.2",
+    "cookie-session": "^1.1.0",
+    "ethercalc": "^0.20150217.0",
+    "express": "^4.12.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
