@@ -28,19 +28,22 @@ passport.use('facebook', new FacebookStrategy({
     clientSecret: '1674335fbc04589c124dcecf508c9064',
     callbackURL: '/auth/facebook/callback'
   },
-  function (accessToken, refreshToken, profile, done) {}
+  function (accessToken, refreshToken, profile, callback) {
+    ProfileRepository.update(profile, accessToken, refreshToken, callback);
+    // http://dev.mysql.com/doc/refman/5.6/en/insert-on-duplicate.html
+  }
 ));
 
-app.use(session({
+app
+  .use(session({
     secret: 'snapblog'
   }))
   .use(bodyParser.urlencoded({
     extended: true
-  }));
-app.use(bodyParser.json())
+  }))
+  .use(bodyParser.json())
   .use(passport.initialize())
-
-.get('/', function (req, res) {
+  .get('/', function (req, res) {
     msg = "";
     res.render('index.ejs', {
       message: msg
