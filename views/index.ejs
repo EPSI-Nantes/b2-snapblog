@@ -6,7 +6,7 @@
 		<meta http-equiv="Content-Language" content="fr">
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 		
-		<link rel="stylesheet" href="style/style.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="../style/style.css" type="text/css" media="screen">
 		
 		<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -16,21 +16,13 @@
 				$("#datepicker").datepicker();
 			});
 		</script>
-        <div id="fb-root"></div>
-        <script>(function(d, s, id) {
-          var js, fjs = d.getElementsByTagName(s)[0];
-          if (d.getElementById(id)) return;
-          js = d.createElement(s); js.id = id;
-          js.src = "//connect.facebook.net/fr_FR/sdk.js#xfbml=1&appId=944762712255296&version=v2.3";
-          fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
         	</head>
         <body>
         <header>
             <h1>SnapBlog</h1>
         </header>   
         <h3 style="color:white;"><%= message %></h3>
-        <form action="/post" method="POST">
+        <form action="/articles/post" method="POST">
             <div class="input Title" >
                 <h3>Titre du SnapBlog</h3>
                 <input class="input" type="text" name="titleArticle" required="required">

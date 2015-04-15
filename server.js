@@ -1,27 +1,58 @@
 'use strict';
 
 var express = require('express');
+var moment = require('moment');
 var session = require('cookie-session');
+var mysql = require('mysql');
+var func = require("./functions");
 var bodyParser = require('body-parser');
 var passport = require("passport");
+var mongoose = require('mongoose');
 var urlencodedParser = bodyParser.urlencoded({
   extended: false
 });
-
+var port = 8080;
 var app = express();
-var func = require("./functions");
 var FacebookStrategy = require('passport-facebook').Strategy;
-var mysql = require('mysql');
 var connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
   database: 'snapblog'
 });
-connection.connect();
-var ArticleRepository = require("./DAO/ArticleRepository")(connection);
+var ArticleRepository = require("./DAO/ArticleRepository")(mysql,connection,moment);
+var ProfileRepository = require("./DAO/ProfileRepository")(mysql,connection);
 var controllers = require('./controllers');
-var articleControllers = controllers.articles(ArticleRepository);
+var articleControllers = controllers.articles(ArticleRepository, func, mysql);
+
+
+    var UserSchema = new mongoose.Schema({
+        facebookId: {
+            type: String
+        },
+        access_token: {
+            type: String
+        },
+    });
+
+    UserSchema.statics.findOrCreate = function(filters, cb) {
+        User = this;
+        this.find(filters, function(err, results) {
+            if(results.length == 0) {
+                var newUser = new User();
+                newUser.facebookId = filters.facebookId;
+                newUser.save(function(err, doc) {
+                    cb(err, doc)
+                });
+            } else {
+                cb(err, results[0]);
+            }
+        });
+    };
+
+var User = mongoose.model('User', UserSchema);
+
+
 
 passport.use('facebook', new FacebookStrategy({
     clientID: '944762712255296',
@@ -31,8 +62,23 @@ passport.use('facebook', new FacebookStrategy({
   function (accessToken, refreshToken, profile, callback) {
     ProfileRepository.update(profile, accessToken, refreshToken, callback);
     // http://dev.mysql.com/doc/refman/5.6/en/insert-on-duplicate.html
+    User.findOrCreate(
+      { facebookId: profile.id },
+      function (err, result) {
+        if(result) {
+            result.access_token = accessToken;
+            result.save(function(err, doc) {
+                done(err, doc);
+            });
+        } else {
+            done(err, result);
+        }
+      }
+    );
   }
 ));
+
+connection.connect();
 
 app
   .use(session({
@@ -44,7 +90,7 @@ app
   .use(bodyParser.json())
   .use(passport.initialize())
   .get('/', function (req, res) {
-    msg = "";
+    var msg = "";
     res.render('index.ejs', {
       message: msg
     });
@@ -60,19 +106,21 @@ app
       user: req.user
     });
   })
-  .get('/auth/facebook', passport.authenticate('facebook', {
-    scope: ['user_friends', 'publish_actions']
-  }))
+  .get('/auth/facebook', passport.authenticate('facebook', { session: false, scope: [] }))
+
   .get('/auth/facebook/callback',
-    passport.authenticate('facebook', {
-      failureRedirect: '/login'
-    }),
-    function (req, res) {
-      // Successful authentication, redirect home.
-      res.redirect('/test');
-    })
-  .post('/articles', articleControllers.create)
-  .get('/articles/:articleId', function (req, res) {
+        passport.authenticate('facebook', { session: false, failureRedirect: "/" }),
+        function(req, res) {
+          res.redirect("/profile?access_token=" + req.user.access_token);
+        }
+    ) 
+
+  .post('/articles/post', articleControllers.create)
+  .get('/articles/:articleId', articleControllers.retrieve) 
+  .get('/profile', passport.authenticate('bearer', { session: false }), function(req, res) {
+        res.send("LOGGED IN as " + req.user.facebookId + " - <a href=\"/logout\">Log out</a>");
+    }
+)
     // @todo
     // Articles.retrieve(req.params.articleId, function (err, article) {
     //   // article => JSON | false
@@ -80,10 +128,11 @@ app
     //   // false => l'article a expiré
     // });
 
-    ArticleRepository.checkUrl(req.params.articleId, function callback(result) {
+
+   /* ArticleRepository.checkUrl(req.params.articleId, function callback(result) {
       if (!result) {
-        color = "white";
-        msg = "Cet article n'existe pas";
+        var color = "white";
+        var msg = "Cet article n'existe pas";
         res.render('index.ejs', {
           message: msg
         });
@@ -95,7 +144,7 @@ app
             console.log('content : ', content);
             res.render('article.ejs', {
               title: title,
-              content: func.nl2br(content)
+              content: content
             });
           } else {
             ArticleRepository.deleteArticle(result.idArticle);
@@ -110,7 +159,8 @@ app
         });
       }
 
-    })
-  })
+    })          */
+  
   .use(express.static(__dirname + '/public'))
-  .listen(8080);
+  .listen(port);
+  console.log('The magic happens on port ' + port);

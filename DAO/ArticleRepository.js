@@ -1,5 +1,4 @@
-'use strict';
-module.exports = function (mysql) {
+module.exports = function (mysql, connection, moment) {
   return {
     insert: function (title, content, checkDate, expDate, expCountdown, idArticle, callback) {
 
@@ -25,22 +24,26 @@ module.exports = function (mysql) {
     },
 
     checkUrl: function (urlToCheck, callback) {
-      connection.query('SELECT idArticle FROM articles WHERE idArticle = ? LIMIT 1', [urlToCheck], function res(err, rows) {
+      console.log('checkUrl');
+      connection.query('SELECT idArticle, expirationDate FROM articles WHERE idArticle = ? LIMIT 1', [urlToCheck], function res(err, rows) {
         if (err) {
           return callback(err);
         }
-
-        callback(null, rows[0]);
+        else if (rows[0] == undefined)
+        {
+          return callback('Cette id n\'existe pas');
+        }
+        callback(rows[0]);
       });
     },
 
-    get: function (idArticle, callback) {
+    getArticle: function (idArticle, callback) {
       connection.query('SELECT * FROM articles WHERE idArticle = ?', [idArticle], function res(err, rows) {
         if (err) {
           return callback(err);
         }
 
-        callback(null, rows[0]);
+        callback(rows[0]);
       });
     },
 

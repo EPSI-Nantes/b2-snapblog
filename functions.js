@@ -14,5 +14,6 @@ var nl2br = function (str, is_xhtml) {
     return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 }
 
+
 exports.makeid = makeid;
 exports.nl2br = nl2br;
