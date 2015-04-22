@@ -1,0 +1,75 @@
+body{
+    width: 100%;
+    background-color: rgb(40,40,40);
+    font-family: Arial;
+    background: #444444 url("bg_pixel-grey.jpg") repeat fixed;
+}
+
+header{
+    padding: 20px;
+}
+
+h1{
+    color: rgb(42,151,46);
+    font-size: 48px;
+    margin: auto;
+    width: 223px;
+}
+
+h2{
+    color: rgb(42,151,46);
+    margin: 10px auto;
+    width: 150px;
+    text-decoration: underline;
+}
+
+h3{
+    margin:auto;
+    text-decoration:underline;
+}
+
+h4{
+    color: red;
+}
+
+form{
+    margin: auto;
+    width: 1000px;
+    height: 1000px;
+    padding: 5px;
+}
+
+.input{
+    margin: 10px auto;
+    width: 600px;
+    padding: 7px;
+}
+
+.textareaPost{
+    height: 400px;
+}
+
+.submit{
+    width: 200px;
+    height: 60px;
+    border-radius: 7px;
+    background-image: linear-gradient(rgba(42,151,46,1) 0%, rgba(15,94,0,1) 100%);
+}
+
+.content{
+    padding: 10px;
+    color: white;
+    width: 700px;
+    margin: auto;
+    background-color: rgba(20,20,20,0.5);
+}
+
+nav{
+    position: absolute;
+    top: 100px;
+    left: 10px;
+    background-color: rgba(20,20,20,0.5);
+    width: 200px;
+    height: 150px;
+    padding: 5px;
+}
